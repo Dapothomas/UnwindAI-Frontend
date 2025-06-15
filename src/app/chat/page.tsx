@@ -270,7 +270,7 @@ export default function ChatPage() {
   };
 
   return (
-    <main className="relative h-screen w-full bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex overflow-hidden font-sans">
+    <main className="relative min-h-screen w-full  bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex flex-col overflow-hidden font-sans">
       {/* Animated stars background - FIXED */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <svg width="100%" height="100%" className="absolute inset-0 w-full h-full">
@@ -361,7 +361,7 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col relative z-10 h-screen">
+      <div className="flex-1 flex flex-col relative z-10">
         {/* Header - FIXED */}
         <div className="sticky top-0 z-20 p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm">
           <div className="flex items-center justify-between">
@@ -448,7 +448,6 @@ export default function ChatPage() {
         </div>
 
         {/* Message Input - FIXED */}
-        <div className="h-screen flex flex-col justify-end">
         <div className="relative z-20 p-4 pb-6 md:pb-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
           <form onSubmit={handleSend} className="flex gap-2">
             <input
@@ -472,8 +471,6 @@ export default function ChatPage() {
           </form>
         </div>
       </div>
-      </div>
-
 
       <style jsx global>{`
         @keyframes twinkle {
