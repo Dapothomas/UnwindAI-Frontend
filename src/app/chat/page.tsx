@@ -445,7 +445,8 @@ export default function ChatPage() {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-1 rounded-2xl px-4 py-3 bg-white/10 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm md:text-base"
+                className="flex-1 rounded-2xl px-4 py-3 bg-white/10 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-base"
+                style={{ fontSize: '16px' }}
                 disabled={isLoading}
               />
               <button
