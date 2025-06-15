@@ -247,7 +247,7 @@ export default function ChatPage() {
 
   return (
     <main className="relative h-screen w-full bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex overflow-hidden font-sans">
-      {/* Fixed animated stars background - positioned fixed to viewport */}
+      {/* Animated stars background - FIXED */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <svg width="100%" height="100%" className="absolute inset-0 w-full h-full">
           <defs>
@@ -337,9 +337,9 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col relative z-10">
-        {/* Header */}
-        <div className="p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm">
+      <div className="flex-1 flex flex-col relative z-10 h-screen">
+        {/* Header - FIXED */}
+        <div className="sticky top-0 z-20 p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             {/* Mobile Hamburger Menu */}
             <button
@@ -377,8 +377,8 @@ export default function ChatPage() {
           </div>
         </div>
 
-        {/* Chat Messages */}
-        <div className="flex-1 overflow-hidden">
+        {/* Chat Messages - SCROLLABLE */}
+        <div className="flex-1 overflow-y-auto">
           {!currentSessionId ? (
             <div className="flex justify-center items-center h-full text-indigo-200">
               <div className="text-center px-4">
@@ -400,7 +400,7 @@ export default function ChatPage() {
               </div>
             </div>
           ) : (
-            <div className="h-full overflow-y-auto p-4 space-y-4 scroll-smooth">
+            <div className="p-4 space-y-4">
               {messages.map((message, index) => (
                 <div
                   key={`${message.sender}-${message.timestamp}-${index}`}
@@ -436,9 +436,9 @@ export default function ChatPage() {
           )}
         </div>
 
-        {/* Message Input */}
+        {/* Message Input - FIXED */}
         {currentSessionId && (
-          <div className="p-4 pb-6 md:pb-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
+          <div className="sticky bottom-0 z-20 p-4 pb-6 md:pb-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
             <form onSubmit={handleSend} className="flex gap-2">
               <input
                 type="text"
@@ -467,21 +467,19 @@ export default function ChatPage() {
           0% { opacity: 0.5; }
           100% { opacity: 1; }
         }
-        .scroll-smooth {
-          scroll-behavior: smooth;
-        }
-        .scroll-smooth::-webkit-scrollbar {
+        /* Custom scrollbar for chat messages */
+        .overflow-y-auto::-webkit-scrollbar {
           width: 6px;
         }
-        .scroll-smooth::-webkit-scrollbar-track {
+        .overflow-y-auto::-webkit-scrollbar-track {
           background: rgba(255, 255, 255, 0.1);
           border-radius: 3px;
         }
-        .scroll-smooth::-webkit-scrollbar-thumb {
+        .overflow-y-auto::-webkit-scrollbar-thumb {
           background: rgba(255, 255, 255, 0.3);
           border-radius: 3px;
         }
-        .scroll-smooth::-webkit-scrollbar-thumb:hover {
+        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
           background: rgba(255, 255, 255, 0.5);
         }
         .safe-area-bottom {
@@ -491,6 +489,15 @@ export default function ChatPage() {
           .safe-area-bottom {
             padding-bottom: 1rem;
           }
+        }
+        /* Ensure body and html don't scroll */
+        html, body {
+          overflow: hidden;
+          height: 100%;
+        }
+        /* Reset for the app */
+        #__next {
+          height: 100%;
         }
       `}</style>
     </main>
