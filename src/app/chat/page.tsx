@@ -339,7 +339,7 @@ export default function ChatPage() {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col relative z-10 h-screen">
         {/* Header - FIXED */}
-        <div className="relative top-0 z-20 p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm">
+        <div className="relative z-20 p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             {/* Mobile Hamburger Menu */}
             <button
