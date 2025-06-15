@@ -448,7 +448,8 @@ export default function ChatPage() {
         </div>
 
         {/* Message Input - FIXED */}
-        <div className=" z-20 p-4 pb-6 md:pb-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
+        <div className="h-screen flex flex-col justify-end">
+        <div className="relative z-20 p-4 pb-6 md:pb-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
           <form onSubmit={handleSend} className="flex gap-2">
             <input
               type="text"
@@ -471,6 +472,8 @@ export default function ChatPage() {
           </form>
         </div>
       </div>
+      </div>
+
 
       <style jsx global>{`
         @keyframes twinkle {
