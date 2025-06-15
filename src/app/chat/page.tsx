@@ -76,7 +76,7 @@ export default function ChatPage() {
         return;
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/sessions`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sessions`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
@@ -107,7 +107,7 @@ export default function ChatPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return;
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/sessions/${sessionId}/messages`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sessions/${sessionId}/messages`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
@@ -133,7 +133,7 @@ export default function ChatPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return;
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/sessions`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sessions`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
@@ -192,7 +192,7 @@ export default function ChatPage() {
       scrollToBottom();
 
       // Send to backend
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/messages`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
