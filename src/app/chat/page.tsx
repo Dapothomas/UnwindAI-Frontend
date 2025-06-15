@@ -247,8 +247,8 @@ export default function ChatPage() {
 
   return (
     <main className="relative h-screen w-full bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex overflow-hidden font-sans">
-      {/* Animated stars background */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      {/* Fixed animated stars background - positioned fixed to viewport */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
         <svg width="100%" height="100%" className="absolute inset-0 w-full h-full">
           <defs>
             <radialGradient id="star-glow" cx="50%" cy="50%" r="50%">
