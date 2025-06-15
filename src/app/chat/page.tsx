@@ -448,7 +448,7 @@ export default function ChatPage() {
         </div>
 
         {/* Message Input - FIXED */}
-        <div className="sticky bottom-0 z-20 p-4 pb-6 md:pb-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
+        <div className=" z-20 p-4 pb-6 md:pb-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
           <form onSubmit={handleSend} className="flex gap-2">
             <input
               type="text"
