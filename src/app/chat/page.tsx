@@ -270,7 +270,7 @@ export default function ChatPage() {
   };
 
   return (
-    <main className="relative h-screen w-full bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex overflow-hidden font-sans">
+    <main className="relative w-full bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex overflow-hidden font-sans mobile-vh">
       {/* Animated stars background - FIXED */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <svg width="100%" height="100%" className="absolute inset-0 w-full h-full">
@@ -361,9 +361,9 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col relative z-10 h-screen">
-        {/* Header - FIXED */}
-        <div className="sticky top-0 z-20 p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm">
+      <div className="flex-1 flex flex-col relative z-10 mobile-vh">
+        {/* Header */}
+        <div className="flex-shrink-0 p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm safe-area-top">
           <div className="flex items-center justify-between">
             {/* Mobile Hamburger Menu */}
             <button
@@ -402,7 +402,7 @@ export default function ChatPage() {
         </div>
 
         {/* Chat Messages - SCROLLABLE */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto min-h-0">
           {messages.length === 0 ? (
             <div className="flex justify-center items-center h-full text-indigo-200 px-4">
               <div className="text-center">
@@ -447,8 +447,8 @@ export default function ChatPage() {
           )}
         </div>
 
-        {/* Message Input - FIXED */}
-        <div className="relative z-20 p-4 pb-6 md:pb-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
+        {/* Message Input - FIXED at bottom with safe area */}
+        <div className="flex-shrink-0 p-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
           <form onSubmit={handleSend} className="flex gap-2">
             <input
               type="text"
@@ -461,7 +461,7 @@ export default function ChatPage() {
             />
             <button
               type="submit"
-              className={`bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold rounded-2xl px-4 md:px-6 py-3 transition text-sm md:text-base ${
+              className={`bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold rounded-2xl px-4 md:px-6 py-3 transition text-sm md:text-base flex-shrink-0 ${
                 isLoading ? 'opacity-50 cursor-not-allowed' : ''
               }`}
               disabled={isLoading}
@@ -477,6 +477,29 @@ export default function ChatPage() {
           0% { opacity: 0.5; }
           100% { opacity: 1; }
         }
+        
+        /* Mobile viewport height fix for Safari */
+        .mobile-vh {
+          height: 100vh;
+          height: 100dvh; /* Dynamic viewport height for modern browsers */
+        }
+        
+        /* Safe area insets for iOS */
+        .safe-area-top {
+          padding-top: max(1rem, env(safe-area-inset-top));
+        }
+        
+        .safe-area-bottom {
+          padding-bottom: max(1rem, env(safe-area-inset-bottom));
+        }
+        
+        /* Ensure proper viewport meta tag handling */
+        @supports (-webkit-touch-callout: none) {
+          .mobile-vh {
+            height: -webkit-fill-available;
+          }
+        }
+        
         /* Custom scrollbar for chat messages */
         .overflow-y-auto::-webkit-scrollbar {
           width: 6px;
@@ -492,24 +515,22 @@ export default function ChatPage() {
         .overflow-y-auto::-webkit-scrollbar-thumb:hover {
           background: rgba(255, 255, 255, 0.5);
         }
-        .safe-area-bottom {
-          padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+        
+        /* Remove the problematic global overflow hidden */
+        html {
+          overflow-x: hidden;
         }
-        @media (min-width: 768px) {
-          .safe-area-bottom {
-            padding-bottom: 1rem;
-          }
+        
+        body {
+          overflow-x: hidden;
+          overscroll-behavior: none;
         }
-        /* Ensure body and html don't scroll */
-        html, body {
-          overflow: hidden;
-          height: 100%;
-        }
-        /* Reset for the app */
-        #__next {
-          height: 100%;
+        
+        /* Prevent zoom on input focus in iOS Safari */
+        input[type="text"]:focus {
+          font-size: 16px !important;
         }
       `}</style>
     </main>
   );
-} 
+}
