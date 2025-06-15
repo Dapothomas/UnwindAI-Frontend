@@ -7,33 +7,17 @@ type Star = { cx: number; cy: number; r: number; delay: number };
 
 type Message = {
   id: number;
-  user_id: string;
-  session_id: number;
   text: string;
   sender: "user" | "ai";
   timestamp: string;
 };
 
-type ChatSession = {
-  id: number;
-  user_id: string;
-  title: string;
-  created_at: string;
-  updated_at: string;
-  message_count: number;
-  last_message: string | null;
-};
-
 export default function ChatPage() {
   const [stars, setStars] = useState<Star[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [currentSessionId, setCurrentSessionId] = useState<number | null>(null);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -50,159 +34,45 @@ export default function ChatPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.push('/signin');
-      } else {
-        // Load chat sessions
-        await fetchSessions();
       }
     };
     checkAuth();
   }, [router]);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping]);
-
-  const scrollToBottom = () => {
-    setTimeout(() => {
-      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
-  const fetchSessions = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) {
-        console.log('No access token found');
-        return;
-      }
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sessions`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setSessions(data);
-      
-      // If no current session and sessions exist, select the first one
-      if (!currentSessionId && data.length > 0) {
-        setCurrentSessionId(data[0].id);
-        await fetchMessages(data[0].id);
-      }
-    } catch (error) {
-      console.error('Error fetching sessions:', error);
-      setSessions([]);
-    }
-  };
-
-  const fetchMessages = async (sessionId: number) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return;
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sessions/${sessionId}/messages`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setMessages(data);
-      scrollToBottom();
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-      setMessages([]);
-    }
-  };
-
-  const createNewSession = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return;
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sessions`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: 'New Chat'
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const newSession = await response.json();
-      setSessions(prev => [newSession, ...prev]);
-      setCurrentSessionId(newSession.id);
-      setMessages([]);
-      setSidebarOpen(false);
-    } catch (error) {
-      console.error('Error creating new session:', error);
-    }
-  };
-
-  const selectSession = async (sessionId: number) => {
-    setCurrentSessionId(sessionId);
-    await fetchMessages(sessionId);
-    setSidebarOpen(false);
-  };
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading || !currentSessionId) return;
+    if (!input.trim() || isLoading) return;
 
     const messageText = input.trim();
+    const userMessage: Message = {
+      id: Date.now(),
+      text: messageText,
+      sender: "user",
+      timestamp: new Date().toISOString()
+    };
+
+    // Add user message immediately
+    setMessages(prev => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
-    setIsTyping(true);
-
-    let userMessage: Message | null = null;
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return;
 
-      // Add user message immediately
-      userMessage = {
-        id: Date.now(),
-        user_id: session.user.id,
-        session_id: currentSessionId,
-        text: messageText,
-        sender: "user" as const,
-        timestamp: new Date().toISOString()
-      };
-      setMessages(prev => [...prev, userMessage!]);
-      scrollToBottom();
-
       // Send to backend
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          text: messageText,
-          sender: 'user',
-          session_id: currentSessionId,
-          timestamp: new Date().toISOString(),
+          message: messageText,
         }),
       });
 
@@ -210,44 +80,35 @@ export default function ChatPage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const aiMessage = await response.json();
+      const data = await response.json();
       
-      // Replace the temporary user message and add AI response
-      setMessages(prev => {
-        const filtered = prev.filter(msg => msg.id !== userMessage!.id);
-        return [...filtered, userMessage!, aiMessage];
-      });
+      // Add AI response
+      const aiMessage: Message = {
+        id: Date.now() + 1,
+        text: data.response || "I'm here to help you. How are you feeling?",
+        sender: "ai",
+        timestamp: new Date().toISOString()
+      };
       
-      scrollToBottom();
-      
-      // Refresh sessions to update last message and timestamp
-      await fetchSessions();
+      setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
-      if (userMessage) {
-        setMessages(prev => prev.filter(msg => msg.id !== userMessage!.id));
-      }
+      // Add error message
+      const errorMessage: Message = {
+        id: Date.now() + 1,
+        text: "I'm sorry, I'm having trouble connecting right now. Please try again.",
+        sender: "ai",
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
-      setIsTyping(false);
-    }
-  };
-
-  const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
-    
-    if (diffInHours < 24) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } else {
-      return date.toLocaleDateString();
     }
   };
 
   return (
-    <main className="relative h-screen w-full bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex overflow-hidden font-sans">
-      {/* Animated stars background - FIXED */}
+    <div className="flex flex-col h-screen bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] relative overflow-hidden">
+      {/* Fixed Stars Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <svg width="100%" height="100%" className="absolute inset-0 w-full h-full">
           <defs>
@@ -269,198 +130,94 @@ export default function ChatPage() {
         </svg>
       </div>
 
-      {/* Mobile Overlay */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-20 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar - Hidden on mobile unless opened */}
-      <div className={`relative z-30 bg-white/5 backdrop-blur-sm border-r border-white/10 transition-all duration-300 ${
-        sidebarOpen ? 'w-80' : 'w-0 md:w-16'
-      } ${sidebarOpen ? 'fixed md:relative inset-y-0 left-0' : 'hidden md:block'}`}>
-        <div className="p-4 h-full flex flex-col">
-          {/* Sidebar Header */}
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            {sidebarOpen && (
-              <button
-                onClick={createNewSession}
-                className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                New Chat
-              </button>
-            )}
-          </div>
-
-          {/* Chat Sessions List */}
-          {sidebarOpen && (
-            <div className="flex-1 overflow-y-auto space-y-2">
-              {sessions.map((session) => (
-                <button
-                  key={session.id}
-                  onClick={() => selectSession(session.id)}
-                  className={`w-full p-3 rounded-lg text-left transition-colors ${
-                    currentSessionId === session.id
-                      ? 'bg-indigo-600/20 border border-indigo-500/30'
-                      : 'bg-white/5 hover:bg-white/10'
-                  }`}
-                >
-                  <div className="text-white font-medium text-sm truncate mb-1">
-                    {session.title}
-                  </div>
-                  {session.last_message && (
-                    <div className="text-gray-400 text-xs truncate mb-1">
-                      {session.last_message}
-                    </div>
-                  )}
-                  <div className="text-gray-500 text-xs">
-                    {formatTime(session.updated_at)} • {session.message_count} messages
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
+      {/* Fixed Header */}
+      <div className="relative z-10 bg-white/5 backdrop-blur-md border-b border-white/10 px-4 py-3">
+        <div className="flex items-center justify-center">
+          <h1 className="text-white text-lg font-semibold">UnwindAI</h1>
         </div>
       </div>
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col relative z-10 h-screen">
-        {/* Header - FIXED */}
-        <div className="sticky top-0 z-20 p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm">
-          <div className="flex items-center justify-between">
-            {/* Mobile Hamburger Menu */}
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors md:hidden"
-            >
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-
-            {/* Logo/Title */}
-            <div className="flex items-center justify-center flex-1 md:flex-none">
-              <svg width="60" height="30" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="60" cy="40" rx="50" ry="15" fill="#3b3f5c" fillOpacity="0.7"/>
-                <ellipse cx="40" cy="25" rx="15" ry="5" fill="#4f5d75" fillOpacity="0.6"/>
-                <ellipse cx="80" cy="30" rx="18" ry="7" fill="#6c63ff" fillOpacity="0.5"/>
-                <circle cx="100" cy="18" r="12" fill="#fffbe6" fillOpacity="0.95" />
-                <ellipse cx="90" cy="22" rx="8" ry="3" fill="#fff" fillOpacity="0.4" />
-              </svg>
+      {/* Messages Area */}
+      <div className="flex-1 relative z-10 overflow-y-auto">
+        {messages.length === 0 ? (
+          <div className="flex items-center justify-center h-full px-4">
+            <div className="text-center">
+              <div className="mb-6">
+                <svg width="80" height="40" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto">
+                  <ellipse cx="60" cy="40" rx="50" ry="15" fill="#3b3f5c" fillOpacity="0.7"/>
+                  <ellipse cx="40" cy="25" rx="15" ry="5" fill="#4f5d75" fillOpacity="0.6"/>
+                  <ellipse cx="80" cy="30" rx="18" ry="7" fill="#6c63ff" fillOpacity="0.5"/>
+                  <circle cx="100" cy="18" r="12" fill="#fffbe6" fillOpacity="0.95" />
+                  <ellipse cx="90" cy="22" rx="8" ry="3" fill="#fff" fillOpacity="0.4" />
+                </svg>
+              </div>
+              <p className="text-xl text-white mb-2">Start a conversation with your AI therapist</p>
+              <p className="text-indigo-300">How are you feeling today?</p>
             </div>
-
-            {/* Mobile New Chat Button */}
-            <button
-              onClick={createNewSession}
-              className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors md:hidden"
-            >
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
-
-            {/* Desktop spacing */}
-            <div className="hidden md:block w-10"></div>
           </div>
-        </div>
-
-        {/* Chat Messages - SCROLLABLE */}
-        <div className="flex-1 overflow-y-auto">
-          {!currentSessionId ? (
-            <div className="flex justify-center items-center h-full text-indigo-200">
-              <div className="text-center px-4">
-                <p className="mb-4 text-lg">Welcome to UnwindAI</p>
-                <p className="mb-6 text-sm text-indigo-300">Your AI therapy companion</p>
-                <button
-                  onClick={createNewSession}
-                  className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors"
-                >
-                  Start New Chat
-                </button>
-              </div>
-            </div>
-          ) : messages.length === 0 ? (
-            <div className="flex justify-center items-center h-full text-indigo-200 px-4">
-              <div className="text-center">
-                <p className="text-lg">Start a conversation with your AI therapist</p>
-                <p className="text-sm text-indigo-300 mt-2">How are you feeling today?</p>
-              </div>
-            </div>
-          ) : (
-            <div className="p-4 space-y-4">
-              {messages.map((message, index) => (
-                <div
-                  key={`${message.sender}-${message.timestamp}-${index}`}
-                  className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[85%] md:max-w-[70%] rounded-lg p-3 ${
-                      message.sender === "user"
-                        ? "bg-indigo-600 text-white"
-                        : "bg-gray-700 text-white"
-                    }`}
-                  >
-                    <p className="text-sm">{message.text}</p>
-                    <p className="text-xs opacity-70 mt-1">
-                      {new Date(message.timestamp).toLocaleTimeString()}
-                    </p>
-                  </div>
-                </div>
-              ))}
-              {isTyping && (
-                <div className="flex justify-start">
-                  <div className="bg-gray-700 text-white rounded-lg p-3 max-w-[85%] md:max-w-[70%]">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div ref={chatEndRef} />
-            </div>
-          )}
-        </div>
-
-        {/* Message Input - FIXED */}
-        {currentSessionId && (
-          <div className="sticky bottom-0 z-20 p-4 pb-6 md:pb-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
-            <form onSubmit={handleSend} className="flex gap-2">
-              <input
-                type="text"
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                placeholder="Type your message..."
-                className="flex-1 rounded-2xl px-4 py-3 bg-white/10 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-base"
-                style={{ fontSize: '16px' }}
-                disabled={isLoading}
-              />
-              <button
-                type="submit"
-                className={`bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold rounded-2xl px-4 md:px-6 py-3 transition text-sm md:text-base ${
-                  isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-                disabled={isLoading}
+        ) : (
+          <div className="px-4 py-4 space-y-4">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
               >
-                {isLoading ? 'Sending...' : 'Send'}
-              </button>
-            </form>
+                <div
+                  className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                    message.sender === "user"
+                      ? "bg-indigo-600 text-white"
+                      : "bg-white/10 text-white backdrop-blur-sm"
+                  }`}
+                >
+                  <p className="text-[16px] leading-relaxed">{message.text}</p>
+                </div>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-white/10 backdrop-blur-sm text-white rounded-2xl px-4 py-3 max-w-[80%]">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
         )}
+      </div>
+
+      {/* Input Area - Connected to Messages */}
+      <div className="relative z-10 bg-white/5 backdrop-blur-md border-t border-white/10 px-4 py-4">
+        <form onSubmit={handleSend} className="flex items-end gap-2">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Message UnwindAI..."
+              className="w-full rounded-2xl px-4 py-3 bg-white/10 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent resize-none"
+              style={{ fontSize: '16px' }}
+              disabled={isLoading}
+              autoComplete="off"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={!input.trim() || isLoading}
+            className={`p-3 rounded-2xl transition-all ${
+              input.trim() && !isLoading
+                ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                : "bg-white/10 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 11L12 6L17 11M12 18V7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </form>
       </div>
 
       <style jsx global>{`
@@ -468,39 +225,34 @@ export default function ChatPage() {
           0% { opacity: 0.5; }
           100% { opacity: 1; }
         }
-        /* Custom scrollbar for chat messages */
+        
+        /* Custom scrollbar */
         .overflow-y-auto::-webkit-scrollbar {
-          width: 6px;
+          width: 4px;
         }
         .overflow-y-auto::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 3px;
+          background: transparent;
         }
         .overflow-y-auto::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 3px;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 2px;
         }
         .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.5);
+          background: rgba(255, 255, 255, 0.3);
         }
-        .safe-area-bottom {
-          padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
-        }
-        @media (min-width: 768px) {
-          .safe-area-bottom {
-            padding-bottom: 1rem;
-          }
-        }
-        /* Ensure body and html don't scroll */
+        
+        /* Ensure no body scroll */
         html, body {
           overflow: hidden;
           height: 100%;
+          margin: 0;
+          padding: 0;
         }
-        /* Reset for the app */
+        
         #__next {
           height: 100%;
         }
       `}</style>
-    </main>
+    </div>
   );
 } 
