@@ -337,7 +337,7 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Area */}
-            <div className="flex-1 flex flex-col relative z-10">
+            <div className="flex-1 flex flex-col sticky z-10">
         {/* Header */}
         <div className="p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm">
 
