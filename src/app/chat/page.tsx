@@ -458,6 +458,11 @@ export default function ChatPage() {
               className="flex-1 rounded-2xl px-4 py-3 bg-white/10 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-base"
               style={{ fontSize: '16px' }}
               disabled={isLoading}
+              onFocus={() => {
+                setTimeout(() => {
+                  document.activeElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+              }}
             />
             <button
               type="submit"
