@@ -270,7 +270,7 @@ export default function ChatPage() {
   };
 
   return (
-    <main className="relative min-h-screen w-full  bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex flex-col overflow-hidden font-sans">
+    <main className="relative h-screen w-full bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex overflow-hidden font-sans">
       {/* Animated stars background - FIXED */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <svg width="100%" height="100%" className="absolute inset-0 w-full h-full">
@@ -361,7 +361,7 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col relative z-10">
+      <div className="flex-1 flex flex-col relative z-10 h-screen">
         {/* Header - FIXED */}
         <div className="sticky top-0 z-20 p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm">
           <div className="flex items-center justify-between">
@@ -458,11 +458,6 @@ export default function ChatPage() {
               className="flex-1 rounded-2xl px-4 py-3 bg-white/10 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-base"
               style={{ fontSize: '16px' }}
               disabled={isLoading}
-              onFocus={() => {
-                setTimeout(() => {
-                  document.activeElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
-              }}
             />
             <button
               type="submit"
