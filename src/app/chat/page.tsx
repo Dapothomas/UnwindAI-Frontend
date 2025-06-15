@@ -173,12 +173,14 @@ export default function ChatPage() {
     setIsLoading(true);
     setIsTyping(true);
 
+    let userMessage: Message | null = null;
+
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) return;
 
       // Add user message immediately
-      const userMessage = {
+      userMessage = {
         id: Date.now(),
         user_id: session.user.id,
         session_id: currentSessionId,
@@ -186,7 +188,7 @@ export default function ChatPage() {
         sender: "user" as const,
         timestamp: new Date().toISOString()
       };
-      setMessages(prev => [...prev, userMessage]);
+      setMessages(prev => [...prev, userMessage!]);
       scrollToBottom();
 
       // Send to backend
@@ -212,8 +214,8 @@ export default function ChatPage() {
       
       // Replace the temporary user message and add AI response
       setMessages(prev => {
-        const filtered = prev.filter(msg => msg.id !== userMessage.id);
-        return [...filtered, userMessage, aiMessage];
+        const filtered = prev.filter(msg => msg.id !== userMessage!.id);
+        return [...filtered, userMessage!, aiMessage];
       });
       
       scrollToBottom();
@@ -222,7 +224,9 @@ export default function ChatPage() {
       await fetchSessions();
     } catch (error) {
       console.error('Error sending message:', error);
-      setMessages(prev => prev.filter(msg => msg.id !== userMessage.id));
+      if (userMessage) {
+        setMessages(prev => prev.filter(msg => msg.id !== userMessage!.id));
+      }
     } finally {
       setIsLoading(false);
       setIsTyping(false);
