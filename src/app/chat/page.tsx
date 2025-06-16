@@ -447,28 +447,44 @@ export default function ChatPage() {
           )}
         </div>
 
-        {/* Message Input - FIXED at bottom with safe area */}
-        <div className="flex-shrink-0 p-4 border-t border-white/10 bg-white/5 backdrop-blur-sm safe-area-bottom">
-          <form onSubmit={handleSend} className="flex gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              placeholder="Type your message..."
-              className="flex-1 rounded-2xl px-4 py-3 bg-white/10 text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-base"
-              style={{ fontSize: '16px' }}
-              disabled={isLoading}
-            />
-            <button
-              type="submit"
-              className={`bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-semibold rounded-2xl px-4 md:px-6 py-3 transition text-sm md:text-base flex-shrink-0 ${
-                isLoading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-              disabled={isLoading}
-            >
-              {isLoading ? 'Sending...' : 'Send'}
-            </button>
-          </form>
+        {/* Message Input - FUTURISTIC DESIGN */}
+        <div className="flex-shrink-0 relative">
+          {/* Glowing background effect */}
+          <div className="absolute inset-0 bg-gradient-to-t from-indigo-500/20 via-purple-500/10 to-transparent blur-xl"></div>
+          <div className="relative bg-white/5 backdrop-blur-xl rounded-t-[2rem] p-6 safe-area-bottom futuristic-glow">
+            <form onSubmit={handleSend} className="flex gap-4 items-end">
+              <div className="flex-1 relative">
+                {/* Input glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-3xl blur-sm"></div>
+                <input
+                  type="text"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  placeholder="Type your message..."
+                  className="relative w-full rounded-3xl px-6 py-4 bg-white/5 text-white placeholder-gray-300 backdrop-blur-sm focus:outline-none focus:bg-white/10 text-base transition-all duration-300 input-glow"
+                  style={{ fontSize: '16px' }}
+                  disabled={isLoading}
+                />
+              </div>
+              <button
+                type="submit"
+                className={`relative w-12 h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-semibold transition-all duration-300 flex items-center justify-center group send-button-glow ${
+                  isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 hover:shadow-2xl hover:shadow-indigo-500/50'
+                }`}
+                disabled={isLoading}
+              >
+                {/* Circular glow effect */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 opacity-0 group-hover:opacity-50 blur-lg transition-opacity duration-300"></div>
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  <svg className="w-5 h-5 relative z-10 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                )}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 
@@ -529,6 +545,54 @@ export default function ChatPage() {
         /* Prevent zoom on input focus in iOS Safari */
         input[type="text"]:focus {
           font-size: 16px !important;
+        }
+        
+        /* Futuristic glow effects */
+        .futuristic-glow {
+          box-shadow: 
+            0 0 30px rgba(99, 102, 241, 0.1),
+            0 0 60px rgba(139, 92, 246, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .input-glow:focus {
+          box-shadow: 
+            0 0 20px rgba(99, 102, 241, 0.3),
+            0 0 40px rgba(139, 92, 246, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .send-button-glow {
+          box-shadow: 
+            0 4px 20px rgba(99, 102, 241, 0.3),
+            0 0 40px rgba(139, 92, 246, 0.2);
+        }
+        
+        .send-button-glow:hover {
+          box-shadow: 
+            0 8px 30px rgba(99, 102, 241, 0.4),
+            0 0 60px rgba(139, 92, 246, 0.3),
+            0 0 100px rgba(139, 92, 246, 0.1);
+        }
+        
+        /* Animated glow pulse for the input area */
+        @keyframes glow-pulse {
+          0%, 100% { 
+            box-shadow: 
+              0 0 30px rgba(99, 102, 241, 0.1),
+              0 0 60px rgba(139, 92, 246, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+          }
+          50% { 
+            box-shadow: 
+              0 0 40px rgba(99, 102, 241, 0.15),
+              0 0 80px rgba(139, 92, 246, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+          }
+        }
+        
+        .futuristic-glow {
+          animation: glow-pulse 4s ease-in-out infinite;
         }
       `}</style>
     </main>
