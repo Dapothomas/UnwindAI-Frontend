@@ -362,75 +362,53 @@ export default function ChatPage() {
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col relative z-10 mobile-vh">
-        {/* Header - FUTURISTIC DESIGN */}
-        <div className="flex-shrink-0 relative">
-          {/* Header glow effect */}
-          <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/10 via-purple-500/5 to-transparent blur-xl"></div>
-          <div className="relative bg-white/5 backdrop-blur-xl rounded-b-[2rem] p-6 safe-area-top header-glow">
-            <div className="flex items-center justify-between">
-              {/* Mobile Hamburger Menu */}
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-3 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 md:hidden button-glow group"
-              >
-                <svg className="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
+        {/* Header */}
+        <div className="flex-shrink-0 p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm safe-area-top">
+          <div className="flex items-center justify-between">
+            {/* Mobile Hamburger Menu */}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors md:hidden"
+            >
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
 
-              {/* Logo/Title with glow */}
-              <div className="flex items-center justify-center flex-1 md:flex-none">
-                <div className="relative logo-glow">
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-400/20 to-purple-400/20 rounded-2xl blur-lg"></div>
-                  <div className="relative bg-white/5 backdrop-blur-sm rounded-2xl p-3">
-                    <svg width="60" height="30" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <ellipse cx="60" cy="40" rx="50" ry="15" fill="#6366f1" fillOpacity="0.8"/>
-                      <ellipse cx="40" cy="25" rx="15" ry="5" fill="#8b5cf6" fillOpacity="0.7"/>
-                      <ellipse cx="80" cy="30" rx="18" ry="7" fill="#a855f7" fillOpacity="0.6"/>
-                      <circle cx="100" cy="18" r="12" fill="#fbbf24" fillOpacity="0.95" />
-                      <ellipse cx="90" cy="22" rx="8" ry="3" fill="#fff" fillOpacity="0.6" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              {/* Mobile New Chat Button */}
-              <button
-                onClick={createNewSession}
-                className="p-3 rounded-2xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 hover:from-indigo-500/30 hover:to-purple-500/30 transition-all duration-300 md:hidden button-glow group backdrop-blur-sm"
-              >
-                <svg className="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
-
-              {/* Desktop spacing */}
-              <div className="hidden md:block w-10"></div>
+            {/* Logo/Title */}
+            <div className="flex items-center justify-center flex-1 md:flex-none">
+              <svg width="60" height="30" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="60" cy="40" rx="50" ry="15" fill="#3b3f5c" fillOpacity="0.7"/>
+                <ellipse cx="40" cy="25" rx="15" ry="5" fill="#4f5d75" fillOpacity="0.6"/>
+                <ellipse cx="80" cy="30" rx="18" ry="7" fill="#6c63ff" fillOpacity="0.5"/>
+                <circle cx="100" cy="18" r="12" fill="#fffbe6" fillOpacity="0.95" />
+                <ellipse cx="90" cy="22" rx="8" ry="3" fill="#fff" fillOpacity="0.4" />
+              </svg>
             </div>
+
+            {/* Mobile New Chat Button */}
+            <button
+              onClick={createNewSession}
+              className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition-colors md:hidden"
+            >
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+
+            {/* Desktop spacing */}
+            <div className="hidden md:block w-10"></div>
           </div>
         </div>
 
-        {/* Chat Messages - FUTURISTIC SCROLLABLE */}
-        <div className="flex-1 overflow-y-auto min-h-0 relative">
-          {/* Subtle gradient overlay for depth */}
-          <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-[#232946]/50 to-transparent pointer-events-none z-10"></div>
-          <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#232946]/50 to-transparent pointer-events-none z-10"></div>
-          
+        {/* Chat Messages - MODERN SCROLLABLE */}
+        <div className="flex-1 overflow-y-auto min-h-0 chat-area">
           {messages.length === 0 ? (
-            <div className="flex justify-center items-center h-full text-indigo-200 px-6">
-              <div className="text-center relative">
-                {/* Welcome message glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-3xl blur-2xl"></div>
-                <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 welcome-glow">
-                  <div className="mb-4">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-indigo-500/20 to-purple-500/20 flex items-center justify-center backdrop-blur-sm">
-                      <svg className="w-8 h-8 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <p className="text-xl font-semibold mb-2 bg-gradient-to-r from-indigo-200 to-purple-200 bg-clip-text text-transparent">Start a conversation with your AI therapist</p>
-                  <p className="text-sm text-indigo-300/80">How are you feeling today?</p>
+            <div className="flex justify-center items-center h-full text-indigo-200 px-4">
+              <div className="text-center welcome-glow">
+                <div className="mb-4 p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+                  <p className="text-lg font-medium">Start a conversation with your AI therapist</p>
+                  <p className="text-sm text-indigo-300 mt-2">How are you feeling today?</p>
                 </div>
               </div>
             </div>
@@ -439,46 +417,30 @@ export default function ChatPage() {
               {messages.map((message, index) => (
                 <div
                   key={`${message.sender}-${message.timestamp}-${index}`}
-                  className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+                  className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"} message-container`}
                 >
-                  <div className="relative group max-w-[85%] md:max-w-[70%]">
-                    {/* Message glow effect */}
-                    <div className={`absolute inset-0 rounded-3xl blur-sm transition-opacity duration-300 ${
+                  <div
+                    className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] ${
                       message.sender === "user"
-                        ? "bg-gradient-to-r from-indigo-500/20 to-purple-500/20 group-hover:opacity-80"
-                        : "bg-gradient-to-r from-gray-500/20 to-slate-500/20 group-hover:opacity-80"
-                    } opacity-50`}></div>
-                    
-                    <div
-                      className={`relative rounded-3xl p-4 backdrop-blur-sm transition-all duration-300 ${
-                        message.sender === "user"
-                          ? "bg-gradient-to-r from-indigo-500/80 to-purple-500/80 text-white message-user-glow"
-                          : "bg-white/10 text-white message-ai-glow border border-white/10"
-                      }`}
-                    >
-                      <p className="text-sm leading-relaxed">{message.text}</p>
-                      <p className="text-xs opacity-60 mt-2 font-mono">
-                        {new Date(message.timestamp).toLocaleTimeString()}
-                      </p>
-                    </div>
+                        ? "bg-gradient-to-br from-indigo-500/80 to-purple-600/80 text-white shadow-lg user-message-glow"
+                        : "bg-white/10 text-white border border-white/20 ai-message-glow"
+                    }`}
+                  >
+                    <p className="text-sm leading-relaxed font-medium">{message.text}</p>
+                    <p className="text-xs opacity-60 mt-2 font-light">
+                      {new Date(message.timestamp).toLocaleTimeString()}
+                    </p>
                   </div>
                 </div>
               ))}
-              
-              {/* Typing indicator - FUTURISTIC */}
               {isTyping && (
-                <div className="flex justify-start">
-                  <div className="relative group max-w-[85%] md:max-w-[70%]">
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-3xl blur-sm opacity-50"></div>
-                    <div className="relative bg-white/10 backdrop-blur-sm rounded-3xl p-4 border border-white/10 typing-glow">
-                      <div className="flex space-x-2 items-center">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                        </div>
-                        <span className="text-xs text-indigo-300 ml-2">AI is thinking...</span>
-                      </div>
+                <div className="flex justify-start message-container">
+                  <div className="bg-white/10 backdrop-blur-sm text-white rounded-2xl px-4 py-3 max-w-[85%] md:max-w-[70%] border border-white/20 typing-indicator-glow">
+                    <div className="flex space-x-1.5 items-center">
+                      <span className="text-xs opacity-60 mr-2">AI is typing</span>
+                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                   </div>
                 </div>
@@ -588,167 +550,132 @@ export default function ChatPage() {
           font-size: 16px !important;
         }
         
-        /* Futuristic glow effects */
+        /* Toned-down futuristic glow effects */
         .futuristic-glow {
           box-shadow: 
-            0 0 30px rgba(99, 102, 241, 0.1),
-            0 0 60px rgba(139, 92, 246, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            0 0 20px rgba(99, 102, 241, 0.06),
+            0 0 40px rgba(139, 92, 246, 0.06),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
         
         .input-glow:focus {
           box-shadow: 
-            0 0 20px rgba(99, 102, 241, 0.3),
-            0 0 40px rgba(139, 92, 246, 0.2),
+            0 0 15px rgba(99, 102, 241, 0.2),
+            0 0 30px rgba(139, 92, 246, 0.15),
             inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
         .send-button-glow {
           box-shadow: 
-            0 4px 20px rgba(99, 102, 241, 0.3),
-            0 0 40px rgba(139, 92, 246, 0.2);
+            0 4px 15px rgba(99, 102, 241, 0.2),
+            0 0 25px rgba(139, 92, 246, 0.15);
         }
         
         .send-button-glow:hover {
           box-shadow: 
-            0 8px 30px rgba(99, 102, 241, 0.4),
-            0 0 60px rgba(139, 92, 246, 0.3),
-            0 0 100px rgba(139, 92, 246, 0.1);
+            0 6px 25px rgba(99, 102, 241, 0.25),
+            0 0 40px rgba(139, 92, 246, 0.2),
+            0 0 60px rgba(139, 92, 246, 0.08);
         }
         
-        /* Animated glow pulse for the input area */
+        /* Subtle animated glow pulse for the input area */
         @keyframes glow-pulse {
           0%, 100% { 
             box-shadow: 
-              0 0 30px rgba(99, 102, 241, 0.1),
-              0 0 60px rgba(139, 92, 246, 0.1),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+              0 0 20px rgba(99, 102, 241, 0.06),
+              0 0 40px rgba(139, 92, 246, 0.06),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
           }
           50% { 
             box-shadow: 
-              0 0 40px rgba(99, 102, 241, 0.15),
-              0 0 80px rgba(139, 92, 246, 0.15),
+              0 0 25px rgba(99, 102, 241, 0.08),
+              0 0 50px rgba(139, 92, 246, 0.08),
               inset 0 1px 0 rgba(255, 255, 255, 0.1);
           }
         }
         
         .futuristic-glow {
-          animation: glow-pulse 4s ease-in-out infinite;
+          animation: glow-pulse 6s ease-in-out infinite;
         }
         
-        /* Header glow effects */
-        .header-glow {
-          box-shadow: 
-            0 0 30px rgba(99, 102, 241, 0.08),
-            0 0 60px rgba(139, 92, 246, 0.08),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
-          animation: header-pulse 6s ease-in-out infinite;
+        /* Toned-down chat area effects */
+        .chat-area {
+          background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.02) 100%);
         }
         
-        @keyframes header-pulse {
-          0%, 100% { 
-            box-shadow: 
-              0 0 30px rgba(99, 102, 241, 0.08),
-              0 0 60px rgba(139, 92, 246, 0.08),
-              inset 0 1px 0 rgba(255, 255, 255, 0.05);
-          }
-          50% { 
-            box-shadow: 
-              0 0 40px rgba(99, 102, 241, 0.12),
-              0 0 80px rgba(139, 92, 246, 0.12),
-              inset 0 1px 0 rgba(255, 255, 255, 0.05);
-          }
-        }
-        
-        /* Logo glow */
-        .logo-glow {
-          animation: logo-float 3s ease-in-out infinite;
-        }
-        
-        @keyframes logo-float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-2px); }
-        }
-        
-        /* Button glow effects */
-        .button-glow {
-          box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
-          transition: all 0.3s ease;
-        }
-        
-        .button-glow:hover {
-          box-shadow: 0 6px 25px rgba(99, 102, 241, 0.3);
-          transform: translateY(-1px);
-        }
-        
-        /* Welcome message glow */
         .welcome-glow {
+          animation: subtle-glow 6s ease-in-out infinite;
+        }
+        
+        .user-message-glow {
           box-shadow: 
-            0 0 40px rgba(99, 102, 241, 0.1),
-            0 0 80px rgba(139, 92, 246, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
-          animation: welcome-pulse 5s ease-in-out infinite;
+            0 2px 15px rgba(99, 102, 241, 0.15),
+            0 1px 6px rgba(139, 92, 246, 0.1);
         }
         
-        @keyframes welcome-pulse {
-          0%, 100% { 
-            box-shadow: 
-              0 0 40px rgba(99, 102, 241, 0.1),
-              0 0 80px rgba(139, 92, 246, 0.1),
-              inset 0 1px 0 rgba(255, 255, 255, 0.05);
-          }
-          50% { 
-            box-shadow: 
-              0 0 60px rgba(99, 102, 241, 0.15),
-              0 0 120px rgba(139, 92, 246, 0.15),
-              inset 0 1px 0 rgba(255, 255, 255, 0.05);
-          }
-        }
-        
-        /* Message bubble glow effects */
-        .message-user-glow {
+        .user-message-glow:hover {
           box-shadow: 
             0 4px 20px rgba(99, 102, 241, 0.2),
-            0 0 40px rgba(139, 92, 246, 0.1);
+            0 2px 10px rgba(139, 92, 246, 0.15);
         }
         
-        .message-ai-glow {
+        .ai-message-glow {
           box-shadow: 
-            0 4px 15px rgba(255, 255, 255, 0.05),
-            0 0 30px rgba(255, 255, 255, 0.02);
+            0 2px 10px rgba(255, 255, 255, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
-        .message-user-glow:hover {
+        .ai-message-glow:hover {
           box-shadow: 
-            0 6px 30px rgba(99, 102, 241, 0.3),
-            0 0 60px rgba(139, 92, 246, 0.15);
+            0 4px 15px rgba(255, 255, 255, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+          border-color: rgba(255, 255, 255, 0.3);
         }
         
-        .message-ai-glow:hover {
+        .typing-indicator-glow {
           box-shadow: 
-            0 6px 25px rgba(255, 255, 255, 0.08),
-            0 0 50px rgba(255, 255, 255, 0.04);
+            0 2px 10px rgba(99, 102, 241, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
-        /* Typing indicator glow */
-        .typing-glow {
-          box-shadow: 
-            0 4px 15px rgba(99, 102, 241, 0.15),
-            0 0 30px rgba(139, 92, 246, 0.1);
-          animation: typing-pulse 2s ease-in-out infinite;
+        .message-container {
+          animation: message-fade-in 0.3s ease-out;
         }
         
-        @keyframes typing-pulse {
+        @keyframes message-fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes subtle-glow {
           0%, 100% { 
-            box-shadow: 
-              0 4px 15px rgba(99, 102, 241, 0.15),
-              0 0 30px rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
           }
           50% { 
-            box-shadow: 
-              0 6px 25px rgba(99, 102, 241, 0.2),
-              0 0 50px rgba(139, 92, 246, 0.15);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.15);
           }
+        }
+        
+        /* Enhanced scrollbar for chat area */
+        .chat-area::-webkit-scrollbar {
+          width: 4px;
+        }
+        .chat-area::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 2px;
+        }
+        .chat-area::-webkit-scrollbar-thumb {
+          background: linear-gradient(180deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+          border-radius: 2px;
+        }
+        .chat-area::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(180deg, rgba(99, 102, 241, 0.5), rgba(139, 92, 246, 0.5));
         }
       `}</style>
     </main>
