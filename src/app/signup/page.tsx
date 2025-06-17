@@ -30,7 +30,7 @@ export default function SignupPage() {
     if (error) {
       setError(error.message);
     } else {
-      setSuccess("Check your email for a confirmation link.");
+      setSuccess("You can Sign In now lol!");
       setTimeout(() => router.push("/signin"), 2000);
     }
   };
