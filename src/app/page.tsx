@@ -1,14 +1,12 @@
 "use client";
 
 export default function LandingPage() {
-  // Generate star positions and animation delays for twinkling
   const stars = Array.from({ length: 80 }, () => ({
     cx: Math.random() * 1600,
     cy: Math.random() * 600,
     r: Math.random() * 1.2 + 0.4,
     delay: Math.random() * 4,
   }));
-  // Shooting stars
   const shootingStars = Array.from({ length: 3 }, () => ({
     x: Math.random() * 1400 + 100,
     y: Math.random() * 200 + 50,
@@ -17,11 +15,9 @@ export default function LandingPage() {
 
   return (
     <main className="relative min-h-screen w-full bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex flex-col items-center overflow-x-hidden font-sans">
-      {/* Animated gradient overlay for extra depth */}
       <div className="pointer-events-none absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 via-purple-900/30 to-blue-900/40 animate-gradient-move" />
       </div>
-      {/* Night sky with animated twinkling stars and shooting stars */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <svg width="100%" height="100%" className="absolute inset-0 w-full h-full" style={{ minHeight: 600 }}>
           <defs>
@@ -43,7 +39,6 @@ export default function LandingPage() {
               }}
             />
           ))}
-          {/* Shooting stars */}
           {shootingStars.map((s, i) => (
             <g key={i} style={{ animation: `shoot 8s linear ${s.delay}s infinite` }}>
               <rect x={s.x} y={s.y} width="2" height="60" rx="1" fill="#fff" fillOpacity="0.7" />
@@ -52,18 +47,14 @@ export default function LandingPage() {
           ))}
         </svg>
       </div>
-      {/* Hero Section */}
       <section className="relative z-10 flex flex-col items-center justify-center pt-16 md:pt-32 pb-12 md:pb-20 w-full px-4 animate-fadein">
         <div className="mb-6 md:mb-8">
-          {/* Beautiful moon and clouds illustration - responsive sizing */}
           <svg width="280" height="140" viewBox="0 0 360 180" fill="none" xmlns="http://www.w3.org/2000/svg" className="md:w-[360px] md:h-[180px]">
             <ellipse cx="180" cy="120" rx="150" ry="40" fill="#3b3f5c" fillOpacity="0.7"/>
             <ellipse cx="100" cy="80" rx="40" ry="15" fill="#4f5d75" fillOpacity="0.6"/>
             <ellipse cx="240" cy="100" rx="50" ry="18" fill="#6c63ff" fillOpacity="0.5"/>
-            {/* Moon */}
             <circle cx="270" cy="60" r="28" fill="#fffbe6" fillOpacity="0.95" />
             <circle cx="278" cy="54" r="6" fill="#f6e7b4" fillOpacity="0.5" />
-            {/* Clouds */}
             <ellipse cx="220" cy="70" rx="18" ry="7" fill="#fff" fillOpacity="0.5" />
             <ellipse cx="250" cy="80" rx="14" ry="5" fill="#fff" fillOpacity="0.3" />
           </svg>
@@ -107,7 +98,6 @@ export default function LandingPage() {
           <p className="text-gray-300 text-sm md:text-base leading-relaxed" style={{ fontFamily: 'var(--font-poppins)' }}>Your conversations are confidential and protected with strong security.</p>
         </div>
       </section>
-      {/* How It Works Section */}
       <section className="relative z-10 w-full max-w-3xl px-4 md:px-6 py-8 md:py-12 animate-fadein-slow">
         <h3 className="text-xl md:text-2xl text-white font-bold mb-4 md:mb-6 text-center" style={{ fontFamily: 'var(--font-poppins)' }}>How It Works</h3>
         <ol className="space-y-4 md:space-y-6 text-gray-200 text-base md:text-lg" style={{ fontFamily: 'var(--font-poppins)' }}>
@@ -116,11 +106,9 @@ export default function LandingPage() {
           <li className="leading-relaxed"><span className="font-bold text-indigo-200">3.</span> Receive thoughtful, supportive responses and guidance.</li>
         </ol>
       </section>
-      {/* Footer */}
       <footer className="relative z-10 w-full text-center text-gray-500 text-xs md:text-sm py-6 md:py-8 px-4 animate-fadein-slow" style={{ fontFamily: 'var(--font-poppins)' }}>
         &copy; {new Date().getFullYear()} Unwind AI. All rights reserved.
       </footer>
-      {/* Animations */}
       <style jsx global>{`
         @keyframes fadein {
           from { opacity: 0; transform: translateY(24px); }

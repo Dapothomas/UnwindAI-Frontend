@@ -12,7 +12,6 @@ export default function SignupPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Only run on client
     const generatedStars = Array.from({ length: 40 }, () => ({
       cx: Math.random() * 1600,
       cy: Math.random() * 600,

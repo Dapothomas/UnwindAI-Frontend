@@ -51,7 +51,6 @@ export default function ChatPage() {
       if (!session) {
         router.push('/signin');
       } else {
-        // Load chat sessions
         await fetchSessions();
       }
     };
@@ -91,7 +90,6 @@ export default function ChatPage() {
       const data = await response.json();
       setSessions(data);
       
-      // If no current session and sessions exist, select the first one
       if (!currentSessionId && data.length > 0) {
         setCurrentSessionId(data[0].id);
         await fetchMessages(data[0].id);
@@ -271,7 +269,6 @@ export default function ChatPage() {
 
   return (
     <main className="relative w-full bg-gradient-to-b from-[#181c2a] via-[#232946] to-[#1a2233] flex overflow-hidden font-sans mobile-vh">
-      {/* Animated stars background - FIXED */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <svg width="100%" height="100%" className="absolute inset-0 w-full h-full">
           <defs>
@@ -293,7 +290,6 @@ export default function ChatPage() {
         </svg>
       </div>
 
-      {/* Mobile Overlay */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-20 md:hidden"
@@ -301,12 +297,10 @@ export default function ChatPage() {
         />
       )}
 
-      {/* Sidebar - Hidden on mobile unless opened */}
       <div className={`relative z-30 bg-white/5 backdrop-blur-sm border-r border-white/10 transition-all duration-300 ${
         sidebarOpen ? 'w-80' : 'w-0 md:w-16'
       } ${sidebarOpen ? 'fixed md:relative inset-y-0 left-0' : 'hidden md:block'}`}>
         <div className="p-4 h-full flex flex-col">
-          {/* Sidebar Header */}
           <div className="flex items-center justify-between mb-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -362,10 +356,8 @@ export default function ChatPage() {
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col relative z-10 mobile-vh">
-        {/* Header */}
         <div className="flex-shrink-0 p-4 border-b border-white/10 bg-white/5 backdrop-blur-sm safe-area-top">
           <div className="flex items-center justify-between">
-            {/* Mobile Hamburger Menu */}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors md:hidden"
@@ -396,12 +388,11 @@ export default function ChatPage() {
               </svg>
             </button>
 
-            {/* Desktop spacing */}
             <div className="hidden md:block w-10"></div>
           </div>
         </div>
 
-        {/* Chat Messages - MODERN SCROLLABLE */}
+        {/* Chat Messages */}
         <div className="flex-1 overflow-y-auto min-h-0 chat-area">
           {messages.length === 0 ? (
             <div className="flex justify-center items-center h-full text-indigo-200 px-4">
@@ -450,14 +441,12 @@ export default function ChatPage() {
           )}
         </div>
 
-        {/* Message Input - FUTURISTIC DESIGN */}
+        {/* Message Input */}
         <div className="flex-shrink-0 relative">
-          {/* Glowing background effect */}
           <div className="absolute inset-0 bg-gradient-to-t from-indigo-500/20 via-purple-500/10 to-transparent blur-xl"></div>
           <div className="relative bg-white/5 backdrop-blur-xl rounded-t-[2rem] p-6 safe-area-bottom futuristic-glow">
             <form onSubmit={handleSend} className="flex gap-4 items-end">
               <div className="flex-1 relative">
-                {/* Input glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 rounded-3xl blur-sm"></div>
                 <input
                   type="text"
@@ -476,7 +465,6 @@ export default function ChatPage() {
                 }`}
                 disabled={isLoading}
               >
-                {/* Circular glow effect */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 opacity-0 group-hover:opacity-50 blur-lg transition-opacity duration-300"></div>
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
